@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Service — Bahá'í Writings</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #faf8f5;
+    --text: #2c2420;
+    --text-light: #6b5e54;
+    --accent: #8b6f4e;
+    --accent-light: #d4c4a8;
+    --border: #e8e0d6;
+    --card-bg: #ffffff;
+    --shadow: rgba(139, 111, 78, 0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 3rem 1.5rem 2rem;
+    background: linear-gradient(180deg, #f0ebe4 0%, var(--bg) 100%);
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 2.8rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.3rem;
+  }
+
+  .hero .subtitle {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--text-light);
+    letter-spacing: 0.02em;
+  }
+
+  .ornament {
+    text-align: center;
+    color: var(--accent-light);
+    font-size: 1.5rem;
+    margin: 1rem 0 0.5rem;
+    letter-spacing: 0.5em;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 1.25rem 3rem;
+  }
+
+  .quote-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1.75rem 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 12px var(--shadow);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .quote-card:hover {
+    box-shadow: 0 4px 20px rgba(139, 111, 78, 0.12);
+  }
+
+  .quote-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0;
+    transition: margin-bottom 0.3s ease;
+  }
+
+  .quote-card.open .quote-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .quote-number {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--accent);
+    min-width: 2rem;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .quote-source {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    flex: 1;
+  }
+
+  .quote-source .author {
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .toggle-icon {
+    color: var(--accent-light);
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    user-select: none;
+  }
+
+  .quote-card.open .toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  .quote-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .quote-card.open .quote-body {
+    max-height: 2000px;
+    opacity: 1;
+  }
+
+  .quote-text {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    line-height: 1.8;
+    color: var(--text);
+    padding-left: 2.75rem;
+    border-left: 2px solid var(--accent-light);
+    margin-left: 0;
+  }
+
+  .quote-text em {
+    font-style: italic;
+  }
+
+  .quote-link {
+    display: inline-block;
+    margin-top: 1rem;
+    margin-left: 2.75rem;
+    font-size: 0.8rem;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .quote-link:hover {
+    text-decoration: underline;
+  }
+
+  .expand-all {
+    text-align: center;
+    margin: 0.5rem 0 1.5rem;
+  }
+
+  .expand-all button {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 20px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: all 0.2s ease;
+  }
+
+  .expand-all button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--accent-light);
+    font-size: 0.8rem;
+  }
+
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 2.2rem; }
+    .quote-card { padding: 1.25rem 1rem; }
+    .quote-text { padding-left: 2rem; font-size: 1.05rem; }
+    .quote-link { margin-left: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Service</h1>
+  <p class="subtitle">Selections from the Bahá'í Writings</p>
+  <div class="ornament">✦ ✦ ✦</div>
+</div>
+
+<div class="container">
+  <div class="expand-all">
+    <button onclick="toggleAll()" id="expandBtn">Expand All</button>
+  </div>
+
+  <div class="quote-card" onclick="toggleQuote(this)">
+    <div class="quote-header">
+      <div class="quote-number">1</div>
+      <div class="quote-source"><span class="author">Bahá'u'lláh</span> — <em>Gleanings</em>, CXVII</div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="quote-body">
+      <div class="quote-text">"It is incumbent upon every man of insight and understanding to strive to translate that which hath been written into reality and action.… That one indeed is a man who, today, dedicateth himself to the service of the entire human race. The Great Being saith: Blessed and happy is he that ariseth to promote the best interests of the peoples and kindreds of the earth. In another passage He hath proclaimed: It is not for him to pride himself who loveth his own country, but rather for him who loveth the whole world. The earth is but one country, and mankind its citizens."</div>
+      <a class="quote-link" href="https://reference.bahai.org/en/t/b/GWB/gwb-117.html" target="_blank">Read online ↗</a>
+    </div>
+  </div>
+
+  <div class="quote-card" onclick="toggleQuote(this)">
+    <div class="quote-header">
+      <div class="quote-number">2</div>
+      <div class="quote-source"><span class="author">'Abdu'l-Bahá</span> — <em>Promulgation of Universal Peace</em></div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="quote-body">
+      <div class="quote-text">"With hearts set aglow by the fire of the love of God and spirits refreshed by the food of the heavenly spirit you must go forth as the disciples nineteen hundred years ago, quickening the hearts of men by the call of glad tidings, the light of God in your faces, severed from everything save God. Therefore, order your lives in accordance with the first principle of the divine teaching, which is love. Service to humanity is service to God. Let the love and light of the Kingdom radiate through you until all who look upon you shall be illumined by its reflection. Be as stars, brilliant and sparkling in the loftiness of their heavenly station. Do you appreciate the Day in which you live?"</div>
+      <a class="quote-link" href="https://reference.bahai.org/en/t/ab/PUP/pup-3.html" target="_blank">Read online ↗</a>
+    </div>
+  </div>
+
+  <div class="quote-card" onclick="toggleQuote(this)">
+    <div class="quote-header">
+      <div class="quote-number">3</div>
+      <div class="quote-source"><span class="author">Bahá'u'lláh</span> — <em>Gleanings</em>, CLIX</div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="quote-body">
+      <div class="quote-text">"Say: True liberty consisteth in man's submission unto My commandments, little as ye know it. Were men to observe that which We have sent down unto them from the Heaven of Revelation, they would, of a certainty, attain unto perfect liberty. Happy is the man that hath apprehended the Purpose of God in whatever He hath revealed from the Heaven of His Will, that pervadeth all created things. Say: The liberty that profiteth you is to be found nowhere except in complete servitude unto God, the Eternal Truth. Whoso hath tasted of its sweetness will refuse to barter it for all the dominion of earth and heaven."</div>
+      <a class="quote-link" href="https://reference.bahai.org/en/t/b/GWB/gwb-159.html" target="_blank">Read online ↗</a>
+    </div>
+  </div>
+
+  <div class="quote-card" onclick="toggleQuote(this)">
+    <div class="quote-header">
+      <div class="quote-number">4</div>
+      <div class="quote-source"><span class="author">'Abdu'l-Bahá</span> — <em>Paris Talks</em></div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="quote-body">
+      <div class="quote-text">"'Should Prayer take the form of action?' 'Abdu'l-Bahá: 'Yes: In the Bahá'í Cause arts, sciences and all crafts are counted as worship. The man who makes a piece of notepaper to the best of his ability, conscientiously, concentrating all his forces on perfecting it, is giving praise to God. Briefly, all effort and exertion put forth by man from the fullness of his heart is worship, if it is prompted by the highest motives and the will to do service to humanity. This is worship: to serve mankind and to minister to the needs of the people. Service is prayer. A physician ministering to the sick, gently, tenderly, free from prejudice and believing in the solidarity of the human race, he is giving praise.'"</div>
+      <a class="quote-link" href="https://reference.bahai.org/en/t/ab/PT/pt-56.html" target="_blank">Read online ↗</a>
+    </div>
+  </div>
+
+  <div class="quote-card" onclick="toggleQuote(this)">
+    <div class="quote-header">
+      <div class="quote-number">5</div>
+      <div class="quote-source"><span class="author">Bahá'u'lláh</span> — <em>The Kitáb-i-Aqdas</em>, ¶120</div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="quote-body">
+      <div class="quote-text">"Adorn your heads with the garlands of trustworthiness and fidelity, your hearts with the attire of the fear of God, your tongues with absolute truthfulness, your bodies with the vesture of courtesy. These are in truth seemly adornings unto the temple of man, if ye be of them that reflect. Cling, O ye people of Bahá, to the cord of servitude unto God, the True One, for thereby your stations shall be made manifest, your names written and preserved, your ranks raised and your memory exalted in the Preserved Tablet."</div>
+      <a class="quote-link" href="https://www.bahai.org/library/authoritative-texts/bahaullah/kitab-i-aqdas/6" target="_blank">Read online ↗</a>
+    </div>
+  </div>
+
+  <div class="quote-card" onclick="toggleQuote(this)">
+    <div class="quote-header">
+      <div class="quote-number">6</div>
+      <div class="quote-source"><span class="author">'Abdu'l-Bahá</span> — <em>The Secret of Divine Civilization</em></div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="quote-body">
+      <div class="quote-text">"The happiness and pride of a nation consist in this, that it should shine out like the sun in the high heaven of knowledge. And the honor and distinction of the individual consist in this, that he among all the world's multitudes should become a source of social good. Is any larger bounty conceivable than this, that an individual, looking within himself, should find that by the confirming grace of God he has become the cause of peace and well-being, of happiness and advantage to his fellow men? No, by the one true God, there is no greater bliss, no more complete delight."</div>
+      <a class="quote-link" href="https://reference.bahai.org/en/t/ab/SDC/sdc-1.html" target="_blank">Read online ↗</a>
+    </div>
+  </div>
+
+  <div class="quote-card" onclick="toggleQuote(this)">
+    <div class="quote-header">
+      <div class="quote-number">7</div>
+      <div class="quote-source"><span class="author">Shoghi Effendi</span> — <em>Directives from the Guardian</em></div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="quote-body">
+      <div class="quote-text">"We must be like the fountain or spring that is continually emptying itself of all that it has and is continually being refilled from an invisible source. To be continually giving out for the good of our fellows undeterred by the fear of poverty and reliant on the unfailing bounty of the Source of all wealth and all good — that is the secret of right living."</div>
+      <a class="quote-link" href="https://www.bahai.org/beliefs/life-spirit/life-generous-giving/bahai-funds" target="_blank">Read online ↗</a>
+    </div>
+  </div>
+
+  <div class="quote-card" onclick="toggleQuote(this)">
+    <div class="quote-header">
+      <div class="quote-number">8</div>
+      <div class="quote-source"><span class="author">On behalf of Shoghi Effendi</span> — <em>Living the Life</em></div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="quote-body">
+      <div class="quote-text">"An individual must center his whole heart and mind on service to the Cause, in accordance with the high standards set by Bahá'u'lláh. When this is done, the Hosts of the Supreme Concourse will come to the assistance of the individual, and every difficulty and trial will gradually be overcome."</div>
+      <a class="quote-link" href="https://oceanoflights.org/living-the-life-bahaullah-abdulbaha-en/" target="_blank">Read online ↗</a>
+    </div>
+  </div>
+
+  <div class="quote-card" onclick="toggleQuote(this)">
+    <div class="quote-header">
+      <div class="quote-number">9</div>
+      <div class="quote-source"><span class="author">'Abdu'l-Bahá</span> — <em>Promulgation of Universal Peace</em></div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="quote-body">
+      <div class="quote-text">"O Thou compassionate, almighty One! This assemblage of souls have turned their faces unto Thee in supplication. With the utmost humility and submission they look toward Thy Kingdom and beg Thee for pardon and forgiveness. O God! Endear this assembly to Thyself. Sanctify these souls, and cast upon them the rays of Thy guidance. Illumine their hearts, and gladden their spirits with Thy glad tidings. Receive all of them in Thy holy Kingdom; confer upon them Thine inexhaustible bounty; make them happy in this world and in the world to come. O God! We are weak; give us strength. We are poor; bestow upon us Thine illimitable treasures. We are sick; grant unto us Thy divine healing. We are impotent; give us Thy heavenly power. O Lord! Make us useful in this world; free us from the condition of self and desire. O Lord! Make us brethren in Thy love, and cause us to be loving toward all Thy children. Confirm us in service to the world of humanity so that we may become the servants of Thy servants, that we may love all Thy creatures and become compassionate to all Thy people. O Lord, Thou art the Almighty. Thou art the Merciful. Thou art the Forgiver. Thou art the Omnipotent."</div>
+      <a class="quote-link" href="https://reference.bahai.org/en/t/ab/PUP/pup-98.html" target="_blank">Read online ↗</a>
+    </div>
+  </div>
+
+  <div class="quote-card" onclick="toggleQuote(this)">
+    <div class="quote-header">
+      <div class="quote-number">10</div>
+      <div class="quote-source"><span class="author">Bahá'u'lláh</span> — <em>Gleanings</em>, XXIII</div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="quote-body">
+      <div class="quote-text">"Say: Glory be to Thee Who hast caused all the holy Ones to confess their helplessness before the manifold revelations of Thy might, and every Prophet to acknowledge His nothingness at the effulgence of Thine abiding glory. I beseech Thee, by Thy name that hath unlocked the gates of Heaven and filled with ecstasy the Concourse on high, to enable me to serve Thee, in this Day, and to strengthen me to observe that which Thou didst prescribe in Thy Book. Thou knowest, O my Lord, what is in me; but I know not what is in Thee. Thou art the All-Knowing, the All-Informed."</div>
+      <a class="quote-link" href="https://reference.bahai.org/en/t/b/GWB/gwb-23.html" target="_blank">Read online ↗</a>
+    </div>
+  </div>
+
+  <div class="quote-card" onclick="toggleQuote(this)">
+    <div class="quote-header">
+      <div class="quote-number">11</div>
+      <div class="quote-source"><span class="author">'Abdu'l-Bahá</span> — <em>Bahá'í Prayers</em></div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="quote-body">
+      <div class="quote-text">"Whoso reciteth this prayer with lowliness and fervor will bring gladness and joy to the heart of this Servant; it will be even as meeting Him face to face.<br><br><strong>He is the All-Glorious!</strong><br><br>O God, my God! Lowly and tearful, I raise my suppliant hands to Thee and cover my face in the dust of that Threshold of Thine, exalted above the knowledge of the learned, and the praise of all that glorify Thee. Graciously look upon Thy servant, humble and lowly at Thy door, with the glances of the eye of Thy mercy, and immerse him in the Ocean of Thine eternal grace.<br><br>Lord! He is a poor and lowly servant of Thine, enthralled and imploring Thee, captive in Thy hand, praying fervently to Thee, trusting in Thee, in tears before Thy face, calling to Thee and beseeching Thee, saying:<br><br>O Lord, my God! Give me Thy grace to serve Thy loved ones, strengthen me in my servitude to Thee, illumine my brow with the light of adoration in Thy court of holiness, and of prayer to Thy kingdom of grandeur. Help me to be selfless at the heavenly entrance of Thy gate, and aid me to be detached from all things within Thy holy precincts. Lord! Give me to drink from the chalice of selflessness; with its robe clothe me, and in its ocean immerse me. Make me as dust in the pathway of Thy loved ones, and grant that I may offer up my soul for the earth ennobled by the footsteps of Thy chosen ones in Thy path, O Lord of Glory in the Highest.<br><br>With this prayer doth Thy servant call Thee, at dawntide and in the night-season. Fulfill his heart's desire, O Lord! Illumine his heart, gladden his bosom, kindle his light, that he may serve Thy Cause and Thy servants.<br><br>Thou art the Bestower, the Pitiful, the Most Bountiful, the Gracious, the Merciful, the Compassionate."</div>
+      <a class="quote-link" href="https://reference.bahai.org/en/t/c/BP/bp-177.html" target="_blank">Read online ↗</a>
+    </div>
+  </div>
+
+  <div class="quote-card" onclick="toggleQuote(this)">
+    <div class="quote-header">
+      <div class="quote-number">12</div>
+      <div class="quote-source"><span class="author">Bahá'u'lláh</span> — <em>Tablets</em> (Lawḥ-i-Dunyá)</div>
+      <div class="toggle-icon">▾</div>
+    </div>
+    <div class="quote-body">
+      <div class="quote-text">"In one of the Tablets these words have been revealed: O people of God! Do not busy yourselves in your own concerns; let your thoughts be fixed upon that which will rehabilitate the fortunes of mankind and sanctify the hearts and souls of men. This can best be achieved through pure and holy deeds, through a virtuous life and a goodly behaviour. Valiant acts will ensure the triumph of this Cause, and a saintly character will reinforce its power. Cleave unto righteousness, O people of Bahá! This, verily, is the commandment which this Wronged One hath given unto you, and the first choice of His unrestrained Will for every one of you."</div>
+      <a class="quote-link" href="https://reference.bahai.org/en/t/b/TB/tb-8.html" target="_blank">Read online ↗</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="ornament" style="margin-bottom: 0.75rem">✦</div>
+  Compiled with love for a gathering on service
+</footer>
+
+<script>
+function toggleQuote(card) {
+  card.classList.toggle('open');
+  updateButtonText();
+}
+
+function toggleAll() {
+  const cards = document.querySelectorAll('.quote-card');
+  const allOpen = [...cards].every(c => c.classList.contains('open'));
+  cards.forEach(c => {
+    if (allOpen) c.classList.remove('open');
+    else c.classList.add('open');
+  });
+  updateButtonText();
+}
+
+function updateButtonText() {
+  const cards = document.querySelectorAll('.quote-card');
+  const allOpen = [...cards].every(c => c.classList.contains('open'));
+  document.getElementById('expandBtn').textContent = allOpen ? 'Collapse All' : 'Expand All';
+}
+</script>
+
+</body>
+</html>
